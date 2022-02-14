@@ -8,7 +8,7 @@ const logger: Logger = new Logger()
 task('deploy-minichef', 'Deploys MiniChefV2 contract')
     .setAction(async (args, hre) => {
         const factory = await hre.ethers.getContractFactory(`contracts/MiniChefV2.sol:MiniChefV2`);
-        const instance = await factory.deploy(config.diffusionToken);
+        const instance = await factory.deploy(config.rewardToken);
 
         await instance.deployed();
 
@@ -20,7 +20,7 @@ task('deploy-rewarder', 'Deploys ComplexRewarderTime contract')
     .setAction(async (args, hre) => {
         const factory = await hre.ethers.getContractFactory(`contracts/ComplexRewarderTime.sol:ComplexRewarderTime`);
         const instance = await factory.deploy(
-            config.rewardToken,
+            config.secondaryRewardToken,
             config.rewardsPerSecond,
             config.miniChef
         );
