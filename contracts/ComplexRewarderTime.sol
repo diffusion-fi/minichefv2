@@ -2,11 +2,11 @@
 
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
-import "../interfaces/IRewarder.sol";
+import "./interfaces/IRewarder.sol";
+import "./interfaces/IMasterChef.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
 import "@boringcrypto/boring-solidity/contracts/BoringOwnable.sol";
-import "../MasterChefV2.sol";
 
 /// @author @0xKeno
 contract ComplexRewarderTime is IRewarder,  BoringOwnable{
@@ -18,7 +18,7 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
 
     /// @notice Info of each MCV2 user.
     /// `amount` LP token amount the user has provided.
-    /// `rewardDebt` The amount of SUSHI entitled to the user.
+    /// `rewardDebt` The amount of DIFFUSION entitled to the user.
     struct UserInfo {
         uint256 amount;
         uint256 rewardDebt;
@@ -27,9 +27,9 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
 
     /// @notice Info of each MCV2 pool.
     /// `allocPoint` The amount of allocation points assigned to the pool.
-    /// Also known as the amount of SUSHI to distribute per block.
+    /// Also known as the amount of DIFFUSION to distribute per block.
     struct PoolInfo {
-        uint128 accSushiPerShare;
+        uint128 accDiffusionPerShare;
         uint64 lastRewardTime;
         uint64 allocPoint;
     }
@@ -60,7 +60,7 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
     event LogOnReward(address indexed user, uint256 indexed pid, uint256 amount, address indexed to);
     event LogPoolAddition(uint256 indexed pid, uint256 allocPoint);
     event LogSetPool(uint256 indexed pid, uint256 allocPoint);
-    event LogUpdatePool(uint256 indexed pid, uint64 lastRewardTime, uint256 lpSupply, uint256 accSushiPerShare);
+    event LogUpdatePool(uint256 indexed pid, uint64 lastRewardTime, uint256 lpSupply, uint256 accDiffusionPerShare);
     event LogRewardPerSecond(uint256 rewardPerSecond);
     event LogInit();
 
@@ -72,13 +72,13 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
     }
 
 
-    function onSushiReward (uint256 pid, address _user, address to, uint256, uint256 lpToken) onlyMCV2 lock override external {
+    function onDiffusionReward (uint256 pid, address _user, address to, uint256, uint256 lpToken) onlyMCV2 lock override external {
         PoolInfo memory pool = updatePool(pid);
         UserInfo storage user = userInfo[pid][_user];
         uint256 pending;
         if (user.amount > 0) {
             pending =
-                (user.amount.mul(pool.accSushiPerShare) / ACC_TOKEN_PRECISION).sub(
+                (user.amount.mul(pool.accDiffusionPerShare) / ACC_TOKEN_PRECISION).sub(
                     user.rewardDebt
                 ).add(user.unpaidRewards);
             uint256 balance = rewardToken.balanceOf(address(this));
@@ -91,7 +91,7 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
             }
         }
         user.amount = lpToken;
-        user.rewardDebt = lpToken.mul(pool.accSushiPerShare) / ACC_TOKEN_PRECISION;
+        user.rewardDebt = lpToken.mul(pool.accDiffusionPerShare) / ACC_TOKEN_PRECISION;
         emit LogOnReward(_user, pid, pending - user.unpaidRewards, to);
     }
 
@@ -103,8 +103,8 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
         return (_rewardTokens, _rewardAmounts);
     }
 
-    /// @notice Sets the sushi per second to be distributed. Can only be called by the owner.
-    /// @param _rewardPerSecond The amount of Sushi to be distributed per second.
+    /// @notice Sets the diffusion per second to be distributed. Can only be called by the owner.
+    /// @param _rewardPerSecond The amount of Diffusion to be distributed per second.
     function setRewardPerSecond(uint256 _rewardPerSecond) public onlyOwner {
         rewardPerSecond = _rewardPerSecond;
         emit LogRewardPerSecond(_rewardPerSecond);
@@ -135,13 +135,13 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
         poolInfo[_pid] = PoolInfo({
             allocPoint: allocPoint.to64(),
             lastRewardTime: lastRewardTime.to64(),
-            accSushiPerShare: 0
+            accDiffusionPerShare: 0
         });
         poolIds.push(_pid);
         emit LogPoolAddition(_pid, allocPoint);
     }
 
-    /// @notice Update the given pool's SUSHI allocation point and `IRewarder` contract. Can only be called by the owner.
+    /// @notice Update the given pool's DIFFUSION allocation point and `IRewarder` contract. Can only be called by the owner.
     /// @param _pid The index of the pool. See `poolInfo`.
     /// @param _allocPoint New AP of the pool.
     function set(uint256 _pid, uint256 _allocPoint) public onlyOwner {
@@ -167,18 +167,18 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
     /// @notice View function to see pending Token
     /// @param _pid The index of the pool. See `poolInfo`.
     /// @param _user Address of user.
-    /// @return pending SUSHI reward for a given user.
+    /// @return pending DIFFUSION reward for a given user.
     function pendingToken(uint256 _pid, address _user) public view returns (uint256 pending) {
         PoolInfo memory pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][_user];
-        uint256 accSushiPerShare = pool.accSushiPerShare;
+        uint256 accDiffusionPerShare = pool.accDiffusionPerShare;
         uint256 lpSupply = MasterChefV2(MASTERCHEF_V2).lpToken(_pid).balanceOf(MASTERCHEF_V2);
         if (block.timestamp > pool.lastRewardTime && lpSupply != 0) {
             uint256 time = block.timestamp.sub(pool.lastRewardTime);
-            uint256 sushiReward = time.mul(rewardPerSecond).mul(pool.allocPoint) / totalAllocPoint;
-            accSushiPerShare = accSushiPerShare.add(sushiReward.mul(ACC_TOKEN_PRECISION) / lpSupply);
+            uint256 diffusionReward = time.mul(rewardPerSecond).mul(pool.allocPoint) / totalAllocPoint;
+            accDiffusionPerShare = accDiffusionPerShare.add(diffusionReward.mul(ACC_TOKEN_PRECISION) / lpSupply);
         }
-        pending = (user.amount.mul(accSushiPerShare) / ACC_TOKEN_PRECISION).sub(user.rewardDebt).add(user.unpaidRewards);
+        pending = (user.amount.mul(accDiffusionPerShare) / ACC_TOKEN_PRECISION).sub(user.rewardDebt).add(user.unpaidRewards);
     }
 
     /// @notice Update reward variables for all pools. Be careful of gas spending!
@@ -200,12 +200,12 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
 
             if (lpSupply > 0) {
                 uint256 time = block.timestamp.sub(pool.lastRewardTime);
-                uint256 sushiReward = time.mul(rewardPerSecond).mul(pool.allocPoint) / totalAllocPoint;
-                pool.accSushiPerShare = pool.accSushiPerShare.add((sushiReward.mul(ACC_TOKEN_PRECISION) / lpSupply).to128());
+                uint256 diffusionReward = time.mul(rewardPerSecond).mul(pool.allocPoint) / totalAllocPoint;
+                pool.accDiffusionPerShare = pool.accDiffusionPerShare.add((diffusionReward.mul(ACC_TOKEN_PRECISION) / lpSupply).to128());
             }
             pool.lastRewardTime = block.timestamp.to64();
             poolInfo[pid] = pool;
-            emit LogUpdatePool(pid, pool.lastRewardTime, lpSupply, pool.accSushiPerShare);
+            emit LogUpdatePool(pid, pool.lastRewardTime, lpSupply, pool.accDiffusionPerShare);
         }
     }
 
