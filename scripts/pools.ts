@@ -6,6 +6,15 @@ import { ComplexRewarderTime, MiniChefV2 } from '../dist/types'
 
 const logger: Logger = new Logger()
 
+task('set-emission', 'Adds Pool')
+    .setAction(async (args, hre) => {
+        const instance = await hre.ethers.getContractAt("MiniChefV2", config.miniChef) as MiniChefV2;
+
+        const res = await instance.setDiffusionPerSecond(config.rewardsPerSecond);
+
+        logger.info(res);
+    });
+
 task('add-pool', 'Adds Pool')
     .addParam('allocpoint', 'Pool allocation points')
     .addParam('lptoken', 'LP token for the pool')

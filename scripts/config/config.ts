@@ -1,9 +1,9 @@
 export default {
-    rewardToken: "0x655Dfdd82cB10Dc7fb931Fd85D69887756B922Fd",
-    secondaryRewardToken: "0x5bBb5A28B56E590e39482Ce934c57de7429A6E66",
-    leftHandSideToken: "0xD6C474447cA995219B52E5c018665eCAfEB772e4",
-    rightHandSideToken: "0x16bc4f17071A27Ebe6Af44e90bac6349057646a5",
-    miniChef: "0xC3D57AB51DD9C2bc926F33f49E61a156df3bb383",
-    complexRewarderTime: "0x021EaCD26D585411d9598C093Cc8E4f3106f3fBE",
-    rewardsPerSecond: 3
+    rewardToken: "0x7e806D59528F6Fa7CCcAdb4821Dd42551113DEFc",
+    secondaryRewardToken: "0x9AC19677BD6B1a3ba046C33f4D2f1952cA0e9a13",
+    leftHandSideToken: "0x7c21d6A51d6f591A95470f1F262C9c804c4CEAc3",
+    rightHandSideToken:"0xD3607915d934576EcdC389E7DBc641097fd5A0dE",
+    miniChef: "0x22E4304f5c555F6549954D77B370F64EC6Fd1Ef9",
+    complexRewarderTime: "0x75aeE82a16BD1fB98b11879af93AB7CE055f66Da",
+    rewardsPerSecond: "3"
 }

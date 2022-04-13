@@ -43,8 +43,13 @@ const config: HardhatUserConfig = {
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("150", "gwei").toNumber(),
     },
+    rinkeby: {
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_PROJECT_ID}`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: utils.parseUnits("1.002", "gwei").toNumber(),
+    },
     evmostestnet: {
-      url: `https://evmos-archive-testnet.api.bdnodes.net:8545`,
+      url: `https://eth.bd.evmos.dev:8545`,
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
     },
