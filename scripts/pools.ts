@@ -3,14 +3,24 @@ import '@nomiclabs/hardhat-ethers'
 import { Logger } from 'tslog'
 import config from './config/config'
 import { ComplexRewarderTime, MiniChefV2 } from '../dist/types'
+import { parseEther } from 'ethers/lib/utils'
 
 const logger: Logger = new Logger()
 
-task('set-emission', 'Adds Pool')
+task('set-emission')
     .setAction(async (args, hre) => {
         const instance = await hre.ethers.getContractAt("MiniChefV2", config.miniChef) as MiniChefV2;
 
-        const res = await instance.setDiffusionPerSecond(config.rewardsPerSecond);
+        const res = await instance.setDiffusionPerSecond(parseEther(config.rewardsPerSecond));
+
+        logger.info(res);
+    });
+
+task('set-emission-complexreward')
+    .setAction(async (args, hre) => {
+        const instance = await hre.ethers.getContractAt("ComplexRewarderTime", config.complexRewarderTime) as ComplexRewarderTime;
+
+        const res = await instance.setRewardPerSecond(parseEther(config.rewardsPerSecond));
 
         logger.info(res);
     });
