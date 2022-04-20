@@ -1,69 +1,66 @@
+import { HardhatUserConfig, task } from 'hardhat/config'
+import '@typechain/hardhat'
+import '@nomiclabs/hardhat-ethers'
+import '@nomiclabs/hardhat-etherscan'
+import 'hardhat-abi-exporter'
 
-import { HardhatUserConfig, task } from "hardhat/config";
-import "@typechain/hardhat";
-import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-etherscan";
-import "hardhat-abi-exporter";
+import { utils, Wallet } from 'ethers'
+import * as dotenv from 'dotenv'
+dotenv.config({ path: `${__dirname}/.env` })
 
-import { utils, Wallet } from "ethers";
-import * as dotenv from "dotenv";
-dotenv.config({ path: `${__dirname}/.env` });
+import('./scripts/index').catch(err => {
+  console.log('./scripts/index not imported until after build completes')
+})
 
-import("./scripts/index")
-.catch((err) => {
-  console.log("./scripts/index not imported until after build completes")
-});
-
-const ALCHEMY_PROJECT_ID = process.env.ALCHEMY_PROJECT_ID || "";
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
-const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || (Wallet.createRandom()).privateKey;
+const ALCHEMY_PROJECT_ID = process.env.ALCHEMY_PROJECT_ID || ''
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ''
+const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || Wallet.createRandom().privateKey
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: 'evmostestnet',
   solidity: {
-    version: "0.6.12",
+    version: '0.6.12',
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
-      },
-    },
+        runs: 200
+      }
+    }
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: ETHERSCAN_API_KEY
   },
   networks: {
     hardhat: {
-      gasPrice: utils.parseUnits("60", "gwei").toNumber(),
+      gasPrice: utils.parseUnits('60', 'gwei').toNumber()
     },
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("150", "gwei").toNumber(),
+      gasPrice: utils.parseUnits('150', 'gwei').toNumber()
     },
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("1.002", "gwei").toNumber(),
+      gasPrice: utils.parseUnits('1.002', 'gwei').toNumber()
     },
     evmostestnet: {
       url: `https://eth.bd.evmos.dev:8545`,
       accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("50", "gwei").toNumber(),
-    },
+      gasPrice: utils.parseUnits('50', 'gwei').toNumber()
+    }
   },
   abiExporter: {
-    path: "./dist/abi",
+    path: './dist/abi',
     clear: false,
     flat: true
   },
   typechain: {
     outDir: './dist/types',
-    target: 'ethers-v5',
-  },
-};
+    target: 'ethers-v5'
+  }
+}
 
-
-export default config;
+export default config
