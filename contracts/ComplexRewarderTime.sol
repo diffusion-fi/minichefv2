@@ -42,7 +42,7 @@ contract ComplexRewarderTime is IRewarder,  BoringOwnable{
     /// @notice Info of each user that stakes LP tokens.
     mapping (uint256 => mapping (address => UserInfo)) public userInfo;
     /// @dev Total allocation points. Must be the sum of all allocation points in all pools.
-    uint256 totalAllocPoint;
+    uint256 public totalAllocPoint;
 
     uint256 public rewardPerSecond;
     uint256 private constant ACC_TOKEN_PRECISION = 1e12;
