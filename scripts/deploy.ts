@@ -3,6 +3,7 @@ import '@nomiclabs/hardhat-ethers'
 import { Logger } from 'tslog'
 import config from './config/config'
 import { ethers } from 'ethers'
+import { parseEther } from 'ethers/lib/utils'
 
 const logger: Logger = new Logger()
 
@@ -22,7 +23,7 @@ task('deploy-rewarder', 'Deploys ComplexRewarderTime contract')
         const factory = await hre.ethers.getContractFactory(`contracts/ComplexRewarderTime.sol:ComplexRewarderTime`);
         const instance = await factory.deploy(
             config.secondaryRewardToken,
-            config.rewardsPerSecond,
+            parseEther(config.rewardsPerSecond),
             config.miniChef
         );
 

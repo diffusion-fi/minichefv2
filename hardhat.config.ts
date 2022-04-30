@@ -53,6 +53,12 @@ const config: HardhatUserConfig = {
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
     },
+    evmosmainnet: {
+      url: `https://evmos-rpc2.binary.host/`,
+      accounts: [DEPLOYER_PRIVATE_KEY],
+      gasPrice: utils.parseUnits("50", "gwei").toNumber(),
+      chainId: 9001
+    },
   },
   abiExporter: {
     path: "./dist/abi",
