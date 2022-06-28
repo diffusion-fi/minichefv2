@@ -54,7 +54,7 @@ const config: HardhatUserConfig = {
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
     },
     evmosmainnet: {
-      url: `https://jsonrpc-evmos-ia.notional.ventures/`,
+      url: `https://eth.bd.evmos.org:8545/`,
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
       chainId: 9001
