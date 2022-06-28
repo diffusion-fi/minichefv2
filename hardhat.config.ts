@@ -46,7 +46,7 @@ const config: HardhatUserConfig = {
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_PROJECT_ID}`,
       accounts: [DEPLOYER_PRIVATE_KEY],
-      gasPrice: utils.parseUnits("1.002", "gwei").toNumber(),
+      gasPrice: utils.parseUnits("4.002", "gwei").toNumber(),
     },
     evmostestnet: {
       url: `https://eth.bd.evmos.dev:8545`,
@@ -54,7 +54,7 @@ const config: HardhatUserConfig = {
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
     },
     evmosmainnet: {
-      url: `https://evmos-rpc2.binary.host/`,
+      url: `https://jsonrpc-evmos-ia.notional.ventures/`,
       accounts: [DEPLOYER_PRIVATE_KEY],
       gasPrice: utils.parseUnits("50", "gwei").toNumber(),
       chainId: 9001

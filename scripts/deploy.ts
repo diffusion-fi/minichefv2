@@ -7,6 +7,16 @@ import { parseEther } from 'ethers/lib/utils'
 
 const logger: Logger = new Logger()
 
+task('deploy-xdiffusion')
+    .setAction(async (args, hre) => {
+        const factory = await hre.ethers.getContractFactory(`contracts/xDiff.sol:DiffusionBar`);
+        const instance = await factory.deploy(config.diffusion);
+
+        await instance.deployed();
+
+        logger.info(instance.address);
+    });
+
 task('deploy-minichef', 'Deploys MiniChefV2 contract')
     .setAction(async (args, hre) => {
         const factory = await hre.ethers.getContractFactory(`contracts/MiniChefV2.sol:MiniChefV2`);

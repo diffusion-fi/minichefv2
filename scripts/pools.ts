@@ -46,3 +46,12 @@ task('add-rewarder', 'Adds Pool to complexRewarder')
 
         logger.info(res);
     });
+
+task('add-lp')
+    .setAction(async (args, hre) => {
+        const instance = await hre.ethers.getContractAt("MiniChefV2", "0x067eC87844fBD73eDa4a1059F30039584586e09d") as MiniChefV2;
+
+        const res = await instance.deposit(3, 10000000000, "0xc52670C4D0efc17E81f84e7cD1787D212AF47FaC");
+
+        logger.info(res);
+    });
