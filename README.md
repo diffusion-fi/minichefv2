@@ -16,6 +16,12 @@ The following assumes the use of `node@>=10`.
 
 `yarn compile`
 
+## Verify Deployed MiniChef and xDiff
+
+```
+npx hardhat verify-deployed-bytecode --network evmosmainnet
+```
+
 ## Run Tests
 
 `yarn test`
